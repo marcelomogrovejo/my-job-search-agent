@@ -9,19 +9,47 @@ def detect_location_group(job):
         job.get("description", ""),
     ]).lower()
 
-    if "vietnam" in text or "ho chi minh" in text or "hanoi" in text:
+    # Vietnam cities
+    if any(keyword in text for keyword in [
+        "vietnam",
+        "ho chi minh",
+        "hanoi",
+        "ha noi",
+        "da nang",
+        "danang"
+    ]):
         return "vietnam"
 
-    if "japan" in text or "tokyo" in text or "osaka" in text:
+    # Japan
+    if any(keyword in text for keyword in [
+        "japan",
+        "tokyo",
+        "osaka"
+    ]):
         return "japan"
 
-    if "thailand" in text or "bangkok" in text:
+    # Thailand
+    if any(keyword in text for keyword in [
+        "thailand",
+        "bangkok"
+    ]):
         return "thailand"
 
-    if "australia" in text or "sydney" in text or "melbourne" in text or "perth" in text:
+    # Australia
+    if any(keyword in text for keyword in [
+        "australia",
+        "sydney",
+        "melbourne",
+        "perth"
+    ]):
         return "australia"
 
-    if "remote" in text or "worldwide" in text or "anywhere" in text:
+    # Remote / fallback
+    if any(keyword in text for keyword in [
+        "remote",
+        "worldwide",
+        "anywhere"
+    ]):
         return "international"
 
     return "international"
