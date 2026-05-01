@@ -9,14 +9,17 @@ def detect_location_group(job):
         job.get("description", ""),
     ]).lower()
 
-    # Vietnam cities
+    # Vietnam cities (English and Vietnamese spellings)
     if any(keyword in text for keyword in [
         "vietnam",
         "ho chi minh",
+        "hồ chí minh",
         "hanoi",
         "ha noi",
+        "hà nội",
         "da nang",
-        "danang"
+        "danang",
+        "đà nẵng",
     ]):
         return "vietnam"
 

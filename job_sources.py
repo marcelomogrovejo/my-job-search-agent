@@ -1,7 +1,8 @@
+import html
 import requests
 from bs4 import BeautifulSoup
 
-ITVIEC_HEADERS = {
+BROWSER_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
@@ -108,11 +109,159 @@ def fetch_itviec_jobs():
     jobs = []
 
     for url in urls:
-        response = requests.get(url, headers=ITVIEC_HEADERS, timeout=20)
+        response = requests.get(url, headers=BROWSER_HEADERS, timeout=20)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
         page_jobs = parse_itviec_cards(soup)
+        print(f"  {url}: {len(page_jobs)} iOS jobs found")
+        jobs.extend(page_jobs)
+
+    return deduplicate_jobs(jobs)
+
+
+def parse_topdev_cards(soup):
+    jobs = []
+
+    title_links = soup.find_all(
+        "a", href=lambda h: h and "/detail-jobs/" in h
+    )
+
+    for title_link in title_links:
+        title = title_link.get_text(strip=True)
+        if not title or not is_ios_relevant(title):
+            continue
+
+        href = title_link.get("href", "")
+        job_url = f"https://topdev.vn{href}" if href.startswith("/") else href
+
+        # Walk up to the card container
+        card = title_link
+        for _ in range(10):
+            card = card.parent
+            classes = " ".join(card.get("class", []))
+            if "shadow" in classes:
+                break
+
+        company = "Unknown"
+        company_span = card.find(
+            "span",
+            class_=lambda c: c and "text-text-500" in c and "font-medium" in c,
+        )
+        if company_span:
+            company = company_span.get_text(strip=True)
+
+        location = "Vietnam"
+        grid = card.find("div", class_=lambda c: c and "grid" in c and "grid-cols-2" in c)
+        if grid:
+            loc_span = grid.find("span", class_="line-clamp-1")
+            if loc_span:
+                loc_text = loc_span.get_text(strip=True)
+                location = f"{loc_text}, Vietnam" if loc_text.lower() == "remote" else loc_text
+
+        skills = []
+        skill_links = card.find_all(
+            "a", href=lambda h: h and "/jobs/search?keyword=" in h
+        )
+        for link in skill_links:
+            skills.append(link.get_text(strip=True))
+
+        jobs.append({
+            "title": title,
+            "company": company,
+            "location": location,
+            "url": job_url,
+            "description": " ".join(skills),
+            "source": "TopDev",
+        })
+
+    return jobs
+
+
+def fetch_topdev_jobs():
+    print("Fetching TopDev jobs...")
+
+    urls = [
+        "https://topdev.vn/jobs/search?keyword=ios",
+        "https://topdev.vn/jobs/search?keyword=swift+developer",
+    ]
+
+    jobs = []
+
+    for url in urls:
+        response = requests.get(url, headers=BROWSER_HEADERS, timeout=20)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        page_jobs = parse_topdev_cards(soup)
+        print(f"  {url}: {len(page_jobs)} iOS jobs found")
+        jobs.extend(page_jobs)
+
+    return deduplicate_jobs(jobs)
+
+
+def parse_vietnamdevs_cards(soup):
+    jobs = []
+    cards = soup.find_all("div", class_=lambda c: c and "card-hoverable" in c)
+
+    for card in cards:
+        h2 = card.find("h2")
+        if not h2:
+            continue
+
+        link = h2.find("a")
+        if not link:
+            continue
+
+        title = link.get_text(strip=True)
+        if not is_ios_relevant(title):
+            continue
+
+        job_url = link.get("href", "")
+
+        company = "Unknown"
+        img = card.find("img", alt=True)
+        if img:
+            alt = html.unescape(img.get("alt", ""))
+            if alt.endswith("'s logo"):
+                company = alt[:-7]
+
+        location = "Vietnam"
+        loc_p = card.find("p", class_=lambda c: c and "text-gray-500" in c)
+        if loc_p:
+            location = loc_p.get_text(strip=True)
+
+        skills = [li.get_text(strip=True) for li in card.find_all("li", class_="gray-label")]
+
+        jobs.append({
+            "title": title,
+            "company": company,
+            "location": location,
+            "url": job_url,
+            "description": " ".join(skills),
+            "source": "VietnamDevs",
+        })
+
+    return jobs
+
+
+def fetch_vietnamdevs_jobs():
+    print("Fetching VietnamDevs jobs...")
+
+    urls = [
+        "https://vietnamdevs.com/jobs/swift",
+        "https://vietnamdevs.com/jobs/mobile-engineer",
+        "https://vietnamdevs.com/jobs/object-c",
+    ]
+
+    jobs = []
+
+    for url in urls:
+        response = requests.get(url, headers=BROWSER_HEADERS, timeout=20)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        page_jobs = parse_vietnamdevs_cards(soup)
         print(f"  {url}: {len(page_jobs)} iOS jobs found")
         jobs.extend(page_jobs)
 
@@ -153,5 +302,15 @@ def fetch_all_jobs():
         jobs.extend(fetch_itviec_jobs())
     except Exception as error:
         print(f"ITviec source failed: {error}")
+
+    try:
+        jobs.extend(fetch_topdev_jobs())
+    except Exception as error:
+        print(f"TopDev source failed: {error}")
+
+    try:
+        jobs.extend(fetch_vietnamdevs_jobs())
+    except Exception as error:
+        print(f"VietnamDevs source failed: {error}")
 
     return deduplicate_jobs(jobs)

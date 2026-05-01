@@ -16,7 +16,7 @@ def group_jobs(scored_jobs):
             grouped[group],
             key=lambda job: job["final_score"],
             reverse=True,
-        )[:5]
+        )
 
     return grouped
 
