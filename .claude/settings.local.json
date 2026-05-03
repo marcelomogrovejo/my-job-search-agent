@@ -2,15 +2,9 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "Bash(curl -s -w '\\\\nHTTP_STATUS:%{http_code}\\\\nSIZE:%{size_download}' 'https://topdev.vn/_next/data/jobs/search.json?keyword=ios' -H 'User-Agent: Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/125.0.0.0 Safari/537.36')",
-      "Bash(curl -s -w '\\\\nHTTP:%{http_code}' 'https://api.topdev.vn/td/v2/jobs/search?keyword=ios&locale=en&page=1&limit=2' -H 'User-Agent: Mozilla/5.0' -H 'Accept: application/json')",
-      "WebFetch(domain:vieclamit.careerviet.vn)",
-      "WebFetch(domain:www.vietnamworks.com)",
-      "Bash(curl -s -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/125.0.0.0 Safari/537.36\" \"https://vieclamit.careerviet.vn/jobs/ios-kw1-en.html\")",
-      "Read(//tmp/**)",
-      "WebFetch(domain:ms.vietnamworks.com)",
       "Bash(curl:*)",
-      "Bash(python3 -c ':*)"
+      "Bash(python3 -c ':*)",
+      "Read(//tmp/**)"
     ]
   }
 }
