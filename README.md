@@ -20,6 +20,14 @@ Automated agent that scrapes iOS developer job listings from multiple Vietnamese
 |--------|------|-----|--------|-------------|
 | RemoteOK | REST API | [remoteok.com](https://remoteok.com) | No | No |
 
+### Not included
+
+| Platform | Reason |
+|----------|--------|
+| LinkedIn | Aggressively blocks scraping, requires login, and restricts API access to approved partners. Still the most valuable source — check it manually. |
+| Indeed | Minimal presence in Vietnam's tech market. Most listings are aggregated from other sources. Heavy bot detection. |
+| Seek | Primarily Australian/NZ. No meaningful Vietnam presence. Their subsidiary JobStreet focuses on Malaysia, Philippines, and Singapore. |
+
 ## Setup
 
 ### Requirements
