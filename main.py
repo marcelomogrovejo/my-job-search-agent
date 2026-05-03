@@ -16,7 +16,7 @@ def group_jobs(scored_jobs):
             grouped[group],
             key=lambda job: job["final_score"],
             reverse=True,
-        )[:5]
+        )
 
     return grouped
 
@@ -82,19 +82,20 @@ def build_html_summary(grouped_jobs):
 
         html_parts.append("</table>")
 
+        if group == "vietnam":
+            linkedin_url = "https://www.linkedin.com/jobs/search/?keywords=ios%20developer&location=Vietnam"
+            html_parts.append(
+                "<div style='margin-top: 12px; padding: 16px; background: #e3f2fd; "
+                "border-left: 4px solid #1565c0; border-radius: 4px;'>"
+                "<strong style='color: #1565c0;'>Don't forget LinkedIn!</strong><br>"
+                "<span style='font-size: 14px; color: #333;'>"
+                "Many top companies post exclusively on LinkedIn. "
+                f"<a href='{linkedin_url}' style='color: #1565c0;'>Check iOS jobs in Vietnam on LinkedIn</a>"
+                "</span></div>"
+            )
+
     if not has_results:
         html_parts.append("<p>No strong iOS matches found today.</p>")
-
-    linkedin_url = "https://www.linkedin.com/jobs/search/?keywords=ios%20developer&location=Vietnam"
-    html_parts.append(
-        "<div style='margin-top: 30px; padding: 16px; background: #e3f2fd; "
-        "border-left: 4px solid #1565c0; border-radius: 4px;'>"
-        "<strong style='color: #1565c0;'>Don't forget LinkedIn!</strong><br>"
-        "<span style='font-size: 14px; color: #333;'>"
-        "Many top companies post exclusively on LinkedIn. "
-        f"<a href='{linkedin_url}' style='color: #1565c0;'>Check iOS jobs in Vietnam on LinkedIn</a>"
-        "</span></div>"
-    )
 
     html_parts.append("</body></html>")
     return "\n".join(html_parts)
