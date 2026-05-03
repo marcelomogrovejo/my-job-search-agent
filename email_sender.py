@@ -11,9 +11,12 @@ def send_email(subject, body):
     email_to = os.getenv("EMAIL_TO")
 
     if not email_user or not email_password or not email_to:
-        raise ValueError("Missing email configuration in GitHub Secrets")
+        print("Email credentials not set — printing summary instead.\n")
+        print(f"Subject: {subject}\n")
+        print(body)
+        return
 
-    message = MIMEText(body)
+    message = MIMEText(body, "html")
     message["Subject"] = subject
     message["From"] = email_user
     message["To"] = email_to
@@ -21,3 +24,5 @@ def send_email(subject, body):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(email_user, email_password)
         server.send_message(message)
+
+    print("Email sent successfully.")
