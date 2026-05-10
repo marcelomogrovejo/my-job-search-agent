@@ -27,7 +27,12 @@ def detect_location_group(job):
     if any(keyword in text for keyword in [
         "japan",
         "tokyo",
-        "osaka"
+        "osaka",
+        "kyoto",
+        "nagoya",
+        "fukuoka",
+        "yokohama",
+        "sapporo",
     ]):
         return "japan"
 

@@ -14,6 +14,18 @@ Automated agent that scrapes iOS developer job listings from multiple Vietnamese
 | ViecLamIT | HTML scraping | [vieclamit.careerviet.vn](https://vieclamit.careerviet.vn) | Yes | No |
 | VietnamWorks | REST API | [vietnamworks.com](https://www.vietnamworks.com) | When visible | No |
 
+### Japan
+
+| Source | Type | URL | Salary | Posted Date |
+|--------|------|-----|--------|-------------|
+| TokyoDev | HTML scraping | [tokyodev.com](https://www.tokyodev.com) | Sometimes (JPY) | No |
+| Forkwell | HTML scraping | [jobs.forkwell.com](https://jobs.forkwell.com) | Yes (JPY) | Yes (relative) |
+
+### Salary considerations
+If < $1500 → skip
+If $1500–2000 → consider carefully
+If $2000+ → strong target
+
 ### International
 
 | Source | Type | URL | Salary | Posted Date |
