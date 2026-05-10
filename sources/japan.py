@@ -396,9 +396,23 @@ REGION = {
         {"fetch": fetch_ejable_jobs, "name": "EJable", "color": "#0891b2"},
         {"fetch": fetch_gaijinpot_jobs, "name": "GaijinPot", "color": "#059669"},
     ],
-    "linkedin_reminder": {
-        "group": "japan",
-        "url": "https://www.linkedin.com/jobs/search/?keywords=ios%20developer&location=Japan",
-        "label": "Japan",
-    },
+    "manual_reminders": [
+        {
+            "group": "japan",
+            "title": "Don't forget LinkedIn!",
+            "text": "Many top companies post exclusively on LinkedIn.",
+            "links": [
+                {"label": "Check iOS jobs in Japan on LinkedIn", "url": "https://www.linkedin.com/jobs/search/?keywords=ios%20developer&location=Japan"},
+            ],
+        },
+        {
+            "group": "japan",
+            "title": "Check Indeed Japan manually",
+            "text": "Indeed Japan blocks scrapers but has a large job volume.",
+            "links": [
+                {"label": "iOS Developer jobs on Indeed Japan", "url": "https://jp.indeed.com/jobs?q=ios+developer&l=Japan"},
+                {"label": "Swift Developer jobs on Indeed Japan", "url": "https://jp.indeed.com/jobs?q=swift+developer&l=Japan"},
+            ],
+        },
+    ],
 }

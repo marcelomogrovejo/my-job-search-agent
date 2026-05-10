@@ -15,11 +15,11 @@ ACTIVE_REGIONS = [
 # Derived from active regions — no manual updates needed
 ACTIVE_SOURCES = [s for r in ACTIVE_REGIONS for s in r["sources"]]
 SOURCE_COLORS = {s["name"]: s["color"] for s in ACTIVE_SOURCES}
-LINKEDIN_REMINDERS = {}
+MANUAL_REMINDERS = {}
 for _region in ACTIVE_REGIONS:
-    reminder = _region.get("linkedin_reminder")
-    if reminder:
-        LINKEDIN_REMINDERS[reminder["group"]] = reminder
+    for reminder in _region.get("manual_reminders", []):
+        group = reminder["group"]
+        MANUAL_REMINDERS.setdefault(group, []).append(reminder)
 
 
 def fetch_all_jobs():

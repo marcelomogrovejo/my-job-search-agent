@@ -1,5 +1,5 @@
 from config import LOCATION_PRIORITY, LOCATION_LABELS
-from job_sources import fetch_all_jobs, SOURCE_COLORS, LINKEDIN_REMINDERS
+from job_sources import fetch_all_jobs, SOURCE_COLORS, MANUAL_REMINDERS
 from job_scoring import score_job
 from email_sender import send_email
 
@@ -75,15 +75,17 @@ def build_html_summary(grouped_jobs):
 
         html_parts.append("</table>")
 
-        if group in LINKEDIN_REMINDERS:
-            reminder = LINKEDIN_REMINDERS[group]
+        for reminder in MANUAL_REMINDERS.get(group, []):
+            links_html = " &middot; ".join(
+                f"<a href='{link['url']}' style='color: #1565c0;'>{link['label']}</a>"
+                for link in reminder["links"]
+            )
             html_parts.append(
                 "<div style='margin-top: 12px; padding: 16px; background: #e3f2fd; "
                 "border-left: 4px solid #1565c0; border-radius: 4px;'>"
-                "<strong style='color: #1565c0;'>Don't forget LinkedIn!</strong><br>"
-                "<span style='font-size: 14px; color: #333;'>"
-                "Many top companies post exclusively on LinkedIn. "
-                f"<a href='{reminder['url']}' style='color: #1565c0;'>Check iOS jobs in {reminder['label']} on LinkedIn</a>"
+                f"<strong style='color: #1565c0;'>{reminder['title']}</strong><br>"
+                f"<span style='font-size: 14px; color: #333;'>"
+                f"{reminder['text']} {links_html}"
                 "</span></div>"
             )
 

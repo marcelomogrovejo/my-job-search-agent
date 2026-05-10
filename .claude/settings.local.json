@@ -10,7 +10,9 @@
       "WebFetch(domain:www.ejable.com)",
       "WebFetch(domain:jobs.forkwell.com)",
       "WebFetch(domain:www.tokyodev.com)",
-      "WebFetch(domain:japan-dev.com)"
+      "WebFetch(domain:japan-dev.com)",
+      "WebFetch(domain:jp.indeed.com)",
+      "WebFetch(domain:www.indeed.com)"
     ]
   }
 }

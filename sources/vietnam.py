@@ -431,9 +431,14 @@ REGION = {
         {"fetch": fetch_vieclamit_jobs, "name": "ViecLamIT", "color": "#ef6c00"},
         {"fetch": fetch_vietnamworks_jobs, "name": "VietnamWorks", "color": "#2e7d32"},
     ],
-    "linkedin_reminder": {
-        "group": "vietnam",
-        "url": "https://www.linkedin.com/jobs/search/?keywords=ios%20developer&location=Vietnam",
-        "label": "Vietnam",
-    },
+    "manual_reminders": [
+        {
+            "group": "vietnam",
+            "title": "Don't forget LinkedIn!",
+            "text": "Many top companies post exclusively on LinkedIn.",
+            "links": [
+                {"label": "Check iOS jobs in Vietnam on LinkedIn", "url": "https://www.linkedin.com/jobs/search/?keywords=ios%20developer&location=Vietnam"},
+            ],
+        },
+    ],
 }
