@@ -202,12 +202,199 @@ def fetch_forkwell_jobs():
     return deduplicate_jobs(jobs)
 
 
+# --- EJable ---
+
+def parse_ejable_jobs(soup):
+    jobs = []
+    articles = soup.find_all("article", class_=lambda c: c and "noo_job" in c)
+
+    for article in articles:
+        title_h3 = article.find("h3", class_="loop-item-title")
+        if not title_h3:
+            continue
+
+        link = title_h3.find("a")
+        if not link:
+            continue
+
+        title = link.get_text(strip=True)
+        if not is_ios_relevant(title):
+            continue
+
+        job_url = link.get("href", "")
+
+        company = "Unknown"
+        comp_span = article.find("span", class_="job-company")
+        if comp_span:
+            comp_text = comp_span.get_text(strip=True)
+            if comp_text:
+                company = comp_text
+
+        city = ""
+        city_span = article.find("span", class_="job-city")
+        if city_span:
+            city = city_span.get_text(strip=True).replace("City:", "").strip()
+
+        country = "Japan"
+        loc_span = article.find("span", class_="job-location")
+        if loc_span:
+            loc_text = loc_span.get_text(strip=True)
+            if loc_text:
+                country = loc_text
+
+        location = f"{city}, {country}" if city else country
+
+        job_type = ""
+        type_span = article.find("span", class_="job-type")
+        if type_span:
+            job_type = type_span.get_text(strip=True)
+
+        # Skills from article CSS classes (job_tag-python, job_tag-swift, etc.)
+        skills = []
+        classes = article.get("class", [])
+        for cls in classes:
+            if cls.startswith("job_tag-"):
+                skills.append(cls.replace("job_tag-", ""))
+
+        jobs.append({
+            "title": title,
+            "company": company,
+            "location": location,
+            "url": job_url,
+            "description": " ".join(skills),
+            "source": "EJable",
+            "posted": "",
+            "salary": "",
+        })
+
+    return jobs
+
+
+def fetch_ejable_jobs():
+    print("Fetching EJable jobs...")
+
+    urls = [
+        "https://www.ejable.com/all-jobs/",
+        "https://www.ejable.com/jobs-for-foreigners-in-japan/",
+    ]
+
+    jobs = []
+
+    for url in urls:
+        response = requests.get(url, headers=BROWSER_HEADERS, timeout=20)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        page_jobs = parse_ejable_jobs(soup)
+        print(f"  {url}: {len(page_jobs)} iOS jobs found")
+        jobs.extend(page_jobs)
+
+    return deduplicate_jobs(jobs)
+
+
+# --- GaijinPot ---
+
+def parse_gaijinpot_jobs(soup):
+    jobs = []
+
+    # Job cards are in the listing page, each with title, company, salary, etc.
+    job_links = soup.find_all("a", href=lambda h: h and re.match(r"/en/job/\d+", h))
+
+    seen_urls = set()
+
+    for link in job_links:
+        href = link.get("href", "")
+        full_url = f"https://jobs.gaijinpot.com{href}"
+        if full_url in seen_urls:
+            continue
+        seen_urls.add(full_url)
+
+        # Title is the link text for job detail links
+        title = link.get_text(strip=True)
+        if not title or not is_ios_relevant(title):
+            continue
+
+        # Walk up to the card container
+        card = link
+        for _ in range(10):
+            card = card.parent
+            if card is None:
+                break
+            classes = " ".join(card.get("class", []))
+            if "job" in classes.lower() or card.name in ("article", "li", "tr"):
+                break
+
+        if card is None:
+            continue
+
+        company = "Unknown"
+        # Company is often in a separate element within the card
+        card_text = card.get_text(separator="\n")
+        lines = [line.strip() for line in card_text.split("\n") if line.strip()]
+
+        # Look for salary pattern (contains ¥ or JPY)
+        salary = ""
+        for line in lines:
+            if "¥" in line or "JPY" in line:
+                salary = line
+                break
+
+        # Look for location (common Japan cities/prefectures)
+        location = "Japan"
+        for line in lines:
+            if any(city in line for city in ["Tokyo", "Osaka", "Kyoto", "Nagoya", "Fukuoka", "Yokohama"]):
+                location = line
+                break
+
+        # Look for posted date
+        posted = ""
+        time_el = card.find("time")
+        if time_el:
+            posted = time_el.get("datetime", time_el.get_text(strip=True))
+
+        jobs.append({
+            "title": title,
+            "company": company,
+            "location": location,
+            "url": full_url,
+            "description": "",
+            "source": "GaijinPot",
+            "posted": posted,
+            "salary": salary,
+        })
+
+    return jobs
+
+
+def fetch_gaijinpot_jobs():
+    print("Fetching GaijinPot jobs...")
+
+    urls = [
+        "https://jobs.gaijinpot.com/en/job?function=7000",
+    ]
+
+    jobs = []
+
+    for url in urls:
+        response = requests.get(url, headers=BROWSER_HEADERS, timeout=20)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        page_jobs = parse_gaijinpot_jobs(soup)
+        print(f"  {url}: {len(page_jobs)} iOS jobs found")
+        jobs.extend(page_jobs)
+
+    return deduplicate_jobs(jobs)
+
+
 # --- Region definition ---
 
 REGION = {
     "sources": [
         {"fetch": fetch_tokyodev_jobs, "name": "TokyoDev", "color": "#dc2626"},
         {"fetch": fetch_forkwell_jobs, "name": "Forkwell", "color": "#7c3aed"},
+        {"fetch": fetch_ejable_jobs, "name": "EJable", "color": "#0891b2"},
+        {"fetch": fetch_gaijinpot_jobs, "name": "GaijinPot", "color": "#059669"},
     ],
     "linkedin_reminder": {
         "group": "japan",

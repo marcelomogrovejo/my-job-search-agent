@@ -20,6 +20,8 @@ Automated agent that scrapes iOS developer job listings from multiple Vietnamese
 |--------|------|-----|--------|-------------|
 | TokyoDev | HTML scraping | [tokyodev.com](https://www.tokyodev.com) | Sometimes (JPY) | No |
 | Forkwell | HTML scraping | [jobs.forkwell.com](https://jobs.forkwell.com) | Yes (JPY) | Yes (relative) |
+| EJable | HTML scraping | [ejable.com](https://www.ejable.com) | No | No |
+| GaijinPot | HTML scraping | [jobs.gaijinpot.com](https://jobs.gaijinpot.com) | Yes (JPY) | Yes |
 
 ### Salary considerations
 If < $1500 → skip
