@@ -4,7 +4,15 @@
       "WebSearch",
       "Bash(curl:*)",
       "Bash(python3 -c ':*)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "WebFetch(domain:www.japandev.com)",
+      "WebFetch(domain:jobs.gaijinpot.com)",
+      "WebFetch(domain:www.ejable.com)",
+      "WebFetch(domain:jobs.forkwell.com)",
+      "WebFetch(domain:www.tokyodev.com)",
+      "WebFetch(domain:japan-dev.com)",
+      "WebFetch(domain:jp.indeed.com)",
+      "WebFetch(domain:www.indeed.com)"
     ]
   }
 }
