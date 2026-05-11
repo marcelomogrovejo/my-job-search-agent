@@ -12,7 +12,12 @@
       "WebFetch(domain:www.tokyodev.com)",
       "WebFetch(domain:japan-dev.com)",
       "WebFetch(domain:jp.indeed.com)",
-      "WebFetch(domain:www.indeed.com)"
+      "WebFetch(domain:www.indeed.com)",
+      "WebFetch(domain:th.jobsdb.com)",
+      "WebFetch(domain:jobs.blognone.com)",
+      "WebFetch(domain:www.blognone.com)",
+      "WebFetch(domain:webcache.googleusercontent.com)",
+      "WebFetch(domain:web.archive.org)"
     ]
   }
 }

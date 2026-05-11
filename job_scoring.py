@@ -39,7 +39,10 @@ def detect_location_group(job):
     # Thailand
     if any(keyword in text for keyword in [
         "thailand",
-        "bangkok"
+        "bangkok",
+        "chiang mai",
+        "phuket",
+        "pattaya",
     ]):
         return "thailand"
 
@@ -74,7 +77,7 @@ def score_job(job):
     if any(excluded in text for excluded in EXCLUDED_KEYWORDS):
         return None
 
-    if not all(required in text for required in REQUIRED_KEYWORDS):
+    if not any(required in text for required in REQUIRED_KEYWORDS):
         return None
 
     relevance_score = 50
