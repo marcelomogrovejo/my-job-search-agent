@@ -387,10 +387,96 @@ def fetch_gaijinpot_jobs():
     return deduplicate_jobs(jobs)
 
 
+# --- Japan Dev (MeiliSearch API) ---
+
+JAPANDEV_MEILI_HOST = "https://meili.japan-dev.com"
+JAPANDEV_MEILI_KEY = "3838486cea4344beaef2c4c5979be249fc5736ea4aab99fab193b5e7f540ffae"
+JAPANDEV_INDEX = "Job_production"
+
+
+def fetch_japandev_jobs():
+    print("Fetching Japan Dev jobs...")
+
+    headers = {
+        "Authorization": f"Bearer {JAPANDEV_MEILI_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    queries = ["ios", "swift", "mobile"]
+    all_jobs = []
+
+    for query in queries:
+        body = {
+            "q": query,
+            "limit": 50,
+            "attributesToRetrieve": [
+                "id", "title", "company_name", "company", "slug", "location",
+                "salary_min", "salary_max", "skill_names",
+                "alternate_skill_names", "job_type_names",
+                "japanese_level", "remote_level", "published_at",
+            ],
+        }
+
+        url = f"{JAPANDEV_MEILI_HOST}/indexes/{JAPANDEV_INDEX}/search"
+        response = requests.post(url, json=body, headers=headers, timeout=20)
+        response.raise_for_status()
+
+        hits = response.json().get("hits", [])
+        print(f"  query='{query}': {len(hits)} results")
+
+        for hit in hits:
+            title = hit.get("title", "")
+            if not is_ios_relevant(title):
+                continue
+
+            company = hit.get("company_name", "Unknown")
+            slug = hit.get("slug", "")
+            company_slug = hit.get("company", {}).get("slug", "")
+            job_url = f"https://japan-dev.com/jobs/{company_slug}/{slug}" if slug and company_slug else ""
+
+            location = hit.get("location", "Japan")
+            remote = hit.get("remote_level", "")
+            if remote and "full" in remote:
+                location = f"Remote, {location}" if location else "Remote, Japan"
+
+            salary = ""
+            smin = hit.get("salary_min")
+            smax = hit.get("salary_max")
+            if smin and smax:
+                salary = f"\u00a5{smin / 1_000_000:.1f}M ~ \u00a5{smax / 1_000_000:.1f}M"
+            elif smax:
+                salary = f"Up to \u00a5{smax / 1_000_000:.1f}M"
+
+            skills = (
+                hit.get("skill_names", [])
+                + hit.get("alternate_skill_names", [])
+                + hit.get("job_type_names", [])
+            )
+
+            posted = ""
+            published = hit.get("published_at", "")
+            if published:
+                posted = published[:10]
+
+            all_jobs.append({
+                "title": title,
+                "company": company,
+                "location": location,
+                "url": job_url,
+                "description": " ".join(skills) if skills else "",
+                "source": "JapanDev",
+                "posted": posted,
+                "salary": salary,
+            })
+
+    return deduplicate_jobs(all_jobs)
+
+
 # --- Region definition ---
 
 REGION = {
     "sources": [
+        {"fetch": fetch_japandev_jobs, "name": "JapanDev", "color": "#f59e0b"},
         {"fetch": fetch_tokyodev_jobs, "name": "TokyoDev", "color": "#dc2626"},
         {"fetch": fetch_forkwell_jobs, "name": "Forkwell", "color": "#7c3aed"},
         {"fetch": fetch_ejable_jobs, "name": "EJable", "color": "#0891b2"},

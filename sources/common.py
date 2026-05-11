@@ -31,15 +31,37 @@ def is_ios_relevant(title):
 
 
 def deduplicate_jobs(jobs):
-    seen = set()
-    unique = []
+    best = {}
     for job in jobs:
         key = (
             job.get("title", "").lower().strip(),
             job.get("company", "").lower().strip(),
         )
-        if key in seen:
-            continue
-        seen.add(key)
-        unique.append(job)
-    return unique
+        if key not in best:
+            best[key] = job
+        else:
+            # Merge data from duplicates: keep the richer version but
+            # combine descriptions so keywords from both sources survive
+            existing = best[key]
+            new_richness = len(job.get("description", "")) + len(job.get("salary", "")) + len(job.get("posted", ""))
+            old_richness = len(existing.get("description", "")) + len(existing.get("salary", "")) + len(existing.get("posted", ""))
+
+            if new_richness > old_richness:
+                winner, donor = job, existing
+            else:
+                winner, donor = existing, job
+
+            # Merge descriptions (combine unique keywords from both)
+            winner_desc = set(winner.get("description", "").split())
+            donor_desc = set(donor.get("description", "").split())
+            merged = winner_desc | donor_desc
+            winner["description"] = " ".join(sorted(merged))
+
+            # Fill in missing fields from donor
+            if not winner.get("salary") and donor.get("salary"):
+                winner["salary"] = donor["salary"]
+            if not winner.get("posted") and donor.get("posted"):
+                winner["posted"] = donor["posted"]
+
+            best[key] = winner
+    return list(best.values())
