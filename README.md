@@ -24,6 +24,12 @@ Automated agent that scrapes iOS developer job listings from multiple Vietnamese
 | EJable | HTML scraping | [ejable.com](https://www.ejable.com) | No | No |
 | GaijinPot | HTML scraping | [jobs.gaijinpot.com](https://jobs.gaijinpot.com) | Yes (JPY) | Yes |
 
+### Thailand
+
+| Source | Type | URL | Salary | Posted Date |
+|--------|------|-----|--------|-------------|
+| JobsDB | REST API | [th.jobsdb.com](https://th.jobsdb.com) | Sometimes (THB) | Yes |
+
 ### Salary considerations
 If < $1500 → skip
 If $1500–2000 → consider carefully

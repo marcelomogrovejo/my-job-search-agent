@@ -1,5 +1,5 @@
 import requests
-from sources.common import BROWSER_HEADERS
+from sources.common import BROWSER_HEADERS, is_ios_relevant
 
 
 # --- RemoteOK ---
@@ -16,6 +16,9 @@ def fetch_remoteok_jobs():
 
     for item in response.json():
         if not isinstance(item, dict) or "position" not in item:
+            continue
+
+        if not is_ios_relevant(item.get("position", "")):
             continue
 
         jobs.append({

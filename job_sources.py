@@ -1,6 +1,7 @@
 from sources.common import deduplicate_jobs
 from sources.vietnam import REGION as VIETNAM
 from sources.japan import REGION as JAPAN
+from sources.thailand import REGION as THAILAND
 from sources.international import REGION as INTERNATIONAL
 
 # ──────────────────────────────────────────────
@@ -9,6 +10,7 @@ from sources.international import REGION as INTERNATIONAL
 ACTIVE_REGIONS = [
     VIETNAM,
     JAPAN,
+    THAILAND,
     INTERNATIONAL,
 ]
 
