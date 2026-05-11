@@ -1,6 +1,6 @@
 # iOS Job Search Agent
 
-Automated agent that scrapes iOS developer job listings from multiple Vietnamese and international job boards, scores them by relevance and location, and sends a formatted HTML email summary on a schedule.
+Automated agent that scrapes iOS developer job listings from multiple job boards across Vietnam, Japan, Thailand, and international remote platforms, scores them by relevance and location, and sends a formatted HTML email summary on a schedule.
 
 ## Job Sources
 
@@ -41,13 +41,35 @@ If $2000+ → strong target
 |--------|------|-----|--------|-------------|
 | RemoteOK | REST API | [remoteok.com](https://remoteok.com) | No | No |
 
-### Not included
+### Not included — Vietnam
 
 | Platform | Reason |
 |----------|--------|
 | LinkedIn | Aggressively blocks scraping, requires login, and restricts API access to approved partners. Still the most valuable source — check it manually. |
 | Indeed | Minimal presence in Vietnam's tech market. Most listings are aggregated from other sources. Heavy bot detection. |
 | Seek | Primarily Australian/NZ. No meaningful Vietnam presence. Their subsidiary JobStreet focuses on Malaysia, Philippines, and Singapore. |
+
+### Not included — Japan
+
+| Platform | Status | Reason |
+|----------|--------|--------|
+| Indeed Japan | Manual reminder | Cloudflare blocks all non-browser requests. JS-only rendering. robots.txt explicitly disallows scrapers. Large volume but inaccessible. |
+| CareerCross | Not added yet | Bilingual job board (EN/JP) for international companies. Has IT category at [careercross.com/en](https://www.careercross.com/en). Worth evaluating. |
+| Daijob | Not added yet | Bilingual professional jobs including dev roles at [daijob.com/en](https://www.daijob.com/en). General board, lower tech density. |
+| Wantedly | Not added yet | Very popular with Japanese startups at [en-jp.wantedly.com](https://en-jp.wantedly.com). Primarily Japanese-language. Potential rate limiting. |
+| HirePlanner | Not added yet | Bilingual IT jobs + career events at [hireplanner.com/en](https://www.hireplanner.com/en). Has dedicated IT section. |
+| Findy Global | Not added yet | Developer matching based on GitHub activity at [findy-jobs.io](https://findy-jobs.io). English-facing version available. |
+
+### Not included — Thailand
+
+| Platform | Status | Reason |
+|----------|--------|--------|
+| Blognone Jobs | Manual reminder | Thailand's top tech-only job board. Cloudflare blocks all requests (HTML and API). Confirmed iOS/Swift listings exist — check manually at [jobs.blognone.com](https://jobs.blognone.com). |
+| JobThai | Not added yet | One of Thailand's biggest job sites at [jobthai.com](https://www.jobthai.com/en). Has Mobile Developer subcategory. Thai-primary with English version. |
+| WorkVenture | Not added yet | Professional jobs + employer reviews (Thai Glassdoor) at [workventure.com](https://www.workventure.com). Has IT/Programming category. |
+| Wellfound | Not added yet | Startup/tech jobs (formerly AngelList) at [wellfound.com](https://wellfound.com/role/l/software-engineer/thailand). English-only, startup-focused. |
+| RECRUITdee | Not added yet | IT recruitment agency targeting expat devs in Bangkok at [recruitdee.com](https://www.recruitdee.com). Small but relevant (~20-50 listings). |
+| Tech in Asia | Not added yet | SEA tech/startup jobs at [techinasia.com/jobs](https://www.techinasia.com/jobs). Known anti-bot measures. |
 
 ## Setup
 
